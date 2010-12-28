@@ -1,3 +1,4 @@
-subdirs = src
 ACLOCAL_AMFLAGS = -I m4
+subdirs = src
+EXTRA_DIST = RELEASE NEWS
 

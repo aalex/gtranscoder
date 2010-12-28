@@ -33,7 +33,7 @@ fi
 # AC_HEADER_STDBOOL
 # AC_C_CONST
 
-# AC_PROG_GCC_TRADITIONAL
+AC_PROG_GCC_TRADITIONAL
 # AC_CHECK_FUNCS([inet_ntoa memset socket])
 
 PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])

@@ -1,11 +1,8 @@
-AM_LDFLAGS = \
-  $(GTK_LIBS)
+AM_LDFLAGS = $(GTK_LIBS)
 
-AM_CFLAGS = \
-  $(GTK_CFLAGS)
+AM_CFLAGS = $(GTK_CFLAGS)
 
 bin_PROGRAMS = gtranscoder
 
-gtranscoder_SOURCES = \
-  main.c
+gtranscoder_SOURCES = main.c
 
