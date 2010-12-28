@@ -1,6 +1,3 @@
 subdirs = src
-
-bin_PROGRAMS = autoTester
-
-autoTester_SOURCES = main.cpp
+ACLOCAL_AMFLAGS = -I m4
 

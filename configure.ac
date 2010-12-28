@@ -5,11 +5,14 @@ AC_PREREQ(2.61)
 AC_INIT(GTRANSCODER, 0.1.1, alexandre@quessy.net)
 AC_DEFINE([PACKAGE_URL],["http://www.toonloop.com"])
 AC_CONFIG_HEADER([src/config.h])
-AC_PROG_LIBTOOL
+AC_CONFIG_MACRO_DIR([m4]) # check for m4 macros in directory m4
 AM_INIT_AUTOMAKE()
 
 # Check for C compiler
 AC_PROG_CC
+# AM_PROG_CC_C_O
+AC_PROG_LIBTOOL
+PKG_PROG_PKG_CONFIG
 
 # GNU help2man creates man pages from --help output; in many cases, this
 # is sufficient, and obviates the need to maintain man pages separately.
@@ -23,16 +26,15 @@ else
 fi
 
 # Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h stdlib.h string.h sys/ioctl.h unistd.h])
+# AC_HEADER_STDC
+# AC_CHECK_HEADERS([arpa/inet.h stdlib.h string.h sys/ioctl.h unistd.h])
+# 
+# # Checks for typedefs, structures, and compiler characteristics.
+# AC_HEADER_STDBOOL
+# AC_C_CONST
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
-AC_C_CONST
-PKG_PROG_PKG_CONFIG
-
-AC_PROG_GCC_TRADITIONAL
-AC_CHECK_FUNCS([inet_ntoa memset socket])
+# AC_PROG_GCC_TRADITIONAL
+# AC_CHECK_FUNCS([inet_ntoa memset socket])
 
 PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])
 AC_SUBST([GTK_LIBS])
