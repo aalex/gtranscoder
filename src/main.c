@@ -18,9 +18,12 @@
  */
 
 #include <glib.h>
+#include <gnome.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+const gchar *hello = N_("Hello");
 
 /**
  * Runs a command synchronously;
@@ -56,6 +59,7 @@ gboolean check_for_ffmpeg()
 
 int main(int argc, char *argv[])
 {
+    g_print("%s\n", hello);
     gboolean has_ffmpeg = check_for_ffmpeg();
     if (! has_ffmpeg)
     {

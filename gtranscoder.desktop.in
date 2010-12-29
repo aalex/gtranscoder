@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Gtranscoder
+_Comment=Gtranscoder movie format converter
+_Name=Transcode movie formats with Gtranscoder
+TryExec=gtranscoder
+Exec=gtranscoder %U
+Icon=gtranscoder.png
+Terminal=0
+Type=Application
+Categories=Application; Video

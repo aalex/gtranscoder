@@ -10,7 +10,8 @@ AM_INIT_AUTOMAKE()
 
 # Check for C compiler
 AC_PROG_CC
-# AM_PROG_CC_C_O
+AC_HEADER_STDC
+
 AC_PROG_LIBTOOL
 PKG_PROG_PKG_CONFIG
 
@@ -25,24 +26,45 @@ else
     HELP2MAN=:
 fi
 
+# take care of localization
+AH_TEMPLATE([GETTEXT_PACKAGE], [Package name for gettext])
+GETTEXT_PACKAGE=gtranscoder	# note that this is a command
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+AC_SUBST(GETTEXT_PACKAGE)
+ALL_LINGUAS="fr de es"
+AM_GLIB_GNU_GETTEXT
+AC_PROG_INTLTOOL
+
 # Checks for header files.
-# AC_HEADER_STDC
 # AC_CHECK_HEADERS([arpa/inet.h stdlib.h string.h sys/ioctl.h unistd.h])
 # 
 # # Checks for typedefs, structures, and compiler characteristics.
 # AC_HEADER_STDBOOL
 # AC_C_CONST
-
-AC_PROG_GCC_TRADITIONAL
+# AC_PROG_GCC_TRADITIONAL
 # AC_CHECK_FUNCS([inet_ntoa memset socket])
 
-PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])
-AC_SUBST([GTK_LIBS])
-AC_SUBST([GTK_CFLAGS])
+# export compiler/linker options
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+
+# look for GTK
+# PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.12.9 glib-2.0 >= 2.16.6 gdk-2.0])
+# AC_SUBST([GTK_LIBS])
+# AC_SUBST([GTK_CFLAGS])
+
+# look for GNOME
+GNOME_MODULES="libgnomeui-2.0 >= 2.0.0"
+PKG_CHECK_MODULES(GNOME, $GNOME_MODULES)
+AC_SUBST(GNOME_CFLAGS)
+AC_SUBST(GNOME_LIBS)
 
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
+    pixmaps/Makefile
+    po/Makefile.in
     ])
 AC_OUTPUT
 

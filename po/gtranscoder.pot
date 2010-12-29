@@ -1,0 +1,29 @@
+# Gtranscoder movie transcoding tool
+# Copyright (C) 2010 Alexandre Quessy
+# This file is distributed under the same license as the Gtranscoder package.
+# Alexandre Quessy <alexandre@quessy.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gtranscoder 0.1.1\n"
+"Report-Msgid-Bugs-To: alexandre@quessy.net\n"
+"POT-Creation-Date: 2010-12-29 13:09-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.c:26
+msgid "Hello"
+msgstr ""
+
+#: ../gtranscoder.desktop.in.h:1
+msgid "Gtranscoder movie format converter"
+msgstr ""
+
+#: ../gtranscoder.desktop.in.h:2
+msgid "Transcode movie formats with Gtranscoder"
+msgstr ""
