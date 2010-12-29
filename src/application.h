@@ -17,35 +17,10 @@
  * along with Gtranscoder.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "config.h"
-#include "application.h"
-#include "transcoding.h"
-#include <gnome.h>
+#ifndef __APPLICATION_H__
+#define __APPLICATION_H__
 
-int main(int argc, char *argv[])
-{
-    GnomeProgram *program;
-    /* initialize GNOME */
-    program = gnome_program_init(PACKAGE,
-        PACKAGE_VERSION,
-        LIBGNOMEUI_MODULE,
-        argc, argv,
-        GNOME_PROGRAM_STANDARD_PROPERTIES,
-        GNOME_PARAM_HUMAN_READABLE_NAME, "Gtranscoder",
-        GNOME_PARAM_ENABLE_SOUND, TRUE,
-        NULL);
-    
-    gboolean has_ffmpeg = check_for_ffmpeg();
-    if (! has_ffmpeg)
-    {
-        g_critical("%s", N_("Could not find the ffmpeg executable."));
-        return 1;
-    }
-    else
-    {
-        g_debug("%s", N_("Found ffmpeg"));
-        run_main_window();
-    }
-    return 0;
-}
+void run_main_window();
+
+#endif
 
