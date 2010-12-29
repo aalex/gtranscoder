@@ -59,6 +59,16 @@ static void on_quit_chosen(GtkWidget *item, gpointer data)
     gtk_main_quit();
 }
 
+/* handler for GnomeFileEntry::activate */
+void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
+{
+    g_debug("`%s' called", __FUNCTION__);
+    gchar *path;
+    path = gnome_file_entry_get_full_path(file_widget, FALSE);
+    g_debug("File chooser activated; new File: %s", path);
+    g_free(path);
+}
+
 void run_main_window()
 {
     GtkWidget *window = gnome_app_new(PACKAGE_NAME, "Gtranscoder");
@@ -105,10 +115,35 @@ void run_main_window()
                            N_("Proceed with the movie transcoding"),
                            NULL, G_CALLBACK(on_apply_clicked), N_("Apply"), -1);
 
-    /* the contents */
-    GtkWidget *label = gtk_label_new(N_("Hello"));
+    /* file chooser */
+    GtkWidget *file_chooser = g_object_new(GNOME_TYPE_FILE_ENTRY, "history-id", "fileentry",
+                            NULL);
+    g_signal_connect(file_chooser, "activate", G_CALLBACK(fileentry_activated),
+                   NULL);
 
-    gnome_app_set_contents(GNOME_APP(window), label);
+    /* create a two-column table for all of the widgets */
+    GtkTable *table = g_object_new(GTK_TYPE_TABLE,
+                       "n-rows", 9,
+                       "n-columns", 2,
+                       "column-spacing", 6,
+                       "row-spacing", 6,
+                       NULL);
+    gtk_table_attach(table, g_object_new(GTK_TYPE_LABEL,
+                                          "label", N_("Input movie file:"),
+                                          "use-underline", TRUE,
+                                          "mnemonic-widget", file_chooser,
+                                          "xalign", 1.0,
+                                          "justify", GTK_JUSTIFY_RIGHT,
+                                          NULL),
+                      0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+
+    gtk_table_attach(table, g_object_new(GTK_TYPE_ALIGNMENT,
+                                          "xalign", 0.0,
+                                          "child", file_chooser,
+                                          NULL),
+                      1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+
+    gnome_app_set_contents(GNOME_APP(window), GTK_WIDGET(table));
     gnome_app_set_menus(GNOME_APP(window), GTK_MENU_BAR(menubar));
     gnome_app_set_toolbar(GNOME_APP(window), GTK_TOOLBAR(toolbar));
     gnome_app_set_statusbar(GNOME_APP(window), statusbar);
