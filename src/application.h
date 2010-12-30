@@ -25,6 +25,7 @@
 typedef struct options_
 {
     gboolean verbose;
+    gboolean show_version;
 } GtranscoderOptions;
 
 typedef struct application_

@@ -32,18 +32,18 @@ int main(int argc, char *argv[])
     
     g_set_application_name (_("Gtranscoder"));
 
-
     GtranscoderOptions *options = g_new0(GtranscoderOptions, 1);;
     GOptionEntry entries[] =
     {
         { "verbose", 'v', 0, G_OPTION_ARG_NONE, &options->verbose, "Print debug info", NULL },
-        { NULL }
+        { "version", 'V', 0, G_OPTION_ARG_NONE, &options->show_version, "Show version number and exit", NULL },
+        { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, 0 }
     };
 
     GError *error = NULL;
     GOptionContext *context;
   
-    context = g_option_context_new("- Movie transcoding program");
+    context = g_option_context_new(N_("- Movie transcoding program"));
     g_option_context_add_main_entries(context, entries, GETTEXT_PACKAGE);
     g_option_context_add_group (context, gtk_get_option_group (TRUE));
     if (g_option_context_parse(context, &argc, &argv, &error) == FALSE)
@@ -56,13 +56,19 @@ int main(int argc, char *argv[])
         g_free(options);
         return 1;
     }
+    if (options->show_version)
+    {
+        g_print("Gtranscoder " VERSION " \n");
+        return 0;
+    }
+
     g_option_context_free (context);
     gtk_init(&argc, &argv);
     
     gboolean has_ffmpeg = check_for_ffmpeg();
     if (! has_ffmpeg)
     {
-        g_critical("%s", N_("Could not find the ffmpeg executable."));
+        g_error("%s", N_("Could not find the ffmpeg executable."));
         return 1;
     }
     else
