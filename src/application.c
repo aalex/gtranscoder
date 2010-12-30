@@ -17,15 +17,12 @@
  * along with Gtranscoder.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIXME
-#include <gnome.h>
 #include <gtk/gtk.h>
-//TODO: use gconf #include <gconf/gconf.h>
-// FIXME
-#include <libgnomeui/libgnomeui.h>
 #include "application.h"
 #include "gtranscoder-error.h"
 #include "config.h"
+// GConf2 will be eventually replaced by GSettings
+//TODO: use gconf #include <gconf/gconf.h>
 
 // TODO: deprecate this (we don't need gobject set data)
 static const gchar *APP_DATA_KEY = "app-data";
@@ -87,16 +84,6 @@ static void on_apply_clicked(GtkToolButton *toolbutton, gpointer data)
         NULL);
 }
 
-/* handler for GnomeFileEntry::activate */
-static void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
-{
-    g_debug("`%s' called", __FUNCTION__);
-    gchar *path;
-    path = gnome_file_entry_get_full_path(file_widget, FALSE);
-    g_debug("File chooser activated; new File: %s", path);
-    g_free(path);
-}
-
 static void init_menubar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app)
 {
     /* setup shortcuts */
@@ -117,7 +104,7 @@ static void init_menubar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app
     GtkWidget *help_menu_widget = gtk_menu_item_new_with_mnemonic("_Help");
     GtkWidget *help_menu = gtk_menu_new();
     GtkWidget *help_help = gtk_image_menu_item_new_from_stock(GTK_STOCK_HELP, accel_group);
-    GtkWidget *help_about = gtk_image_menu_item_new_from_stock(GNOME_STOCK_ABOUT, accel_group);
+    GtkWidget *help_about = gtk_image_menu_item_new_from_stock(GTK_STOCK_ABOUT, accel_group);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(help_menu_widget), GTK_WIDGET(help_menu));
     gtk_menu_shell_append(GTK_MENU_SHELL(help_menu), help_help);
     gtk_menu_shell_append(GTK_MENU_SHELL(help_menu), help_about);
@@ -150,10 +137,8 @@ static void init_toolbar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app
 static void init_contents(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app)
 {
     /* file chooser */
-    GtkWidget *file_chooser = g_object_new(GNOME_TYPE_FILE_ENTRY, 
-        "history-id", "fileentry",
-         NULL);
-    g_signal_connect(file_chooser, "activate", G_CALLBACK(fileentry_activated), NULL);
+    GtkWidget *file_chooser = gtk_file_chooser_button_new(N_("Input file chooser"), GTK_FILE_CHOOSER_ACTION_OPEN);
+    //g_signal_connect(file_chooser, "activate", G_CALLBACK(fileentry_activated), NULL);
     app->file_chooser = file_chooser;
 
     /* create a two-column table for all of the widgets */
@@ -185,6 +170,8 @@ static void init_statusbar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *a
 {
     GtkWidget *statusbar = gtk_statusbar_new();
     gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+    gtk_widget_show_all(GTK_WIDGET(statusbar));
+    gtk_statusbar_push(GTK_STATUSBAR(statusbar), gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Only for when creating the status bar"), N_("Ready"));
     app->statusbar = statusbar;
 }
 
@@ -192,7 +179,7 @@ void run_main_window(GtranscoderOptions *options)
 {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Gtranscoder"); // TODO: " - " APP_ONE_LINER);
-    gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
+    //gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
     GtranscoderApp *app = g_new0(GtranscoderApp, 1);
     // FIXME: don't need that:
     g_object_set_data(G_OBJECT(window), APP_DATA_KEY, app);
