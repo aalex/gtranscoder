@@ -15,6 +15,8 @@ gtranscoder_SOURCES = \
     main.c \
     application.c \
     application.h \
+	gtranscoder-error.c \
+	gtranscoder-error.h \
     transcoding.c \
     transcoding.h
 

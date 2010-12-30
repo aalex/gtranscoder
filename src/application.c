@@ -20,34 +20,15 @@
 // FIXME
 #include <gnome.h>
 #include <gtk/gtk.h>
+//#include <gconf/gconf.h>
 // FIXME
 #include <libgnomeui/libgnomeui.h>
 #include "application.h"
+#include "gtranscoder-error.h"
 #include "config.h"
 
+// TODO: deprecate this (we don't need gobject set data)
 static const gchar *APP_DATA_KEY = "app-data";
-
-/**
- * Shows an error dialog. The main loop must be running.
- */
-GtkWidget *gtranscoder_show_error_dialog(const gchar *message, GtkWidget *parent)
-{
-    /* TODO: maybe pass a GCallback as well */
-    GtkWidget *dialog = gtk_message_dialog_new_with_markup(
-        GTK_WINDOW(parent),
-        GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-        GTK_MESSAGE_ERROR,
-        GTK_BUTTONS_CLOSE,
-        message,
-        NULL);
-    /* Ensure that the dialog box is destroyed when the user responds. */
-    g_signal_connect_swapped (dialog,
-        "response",
-        G_CALLBACK (gtk_widget_destroy),
-        dialog);
-    gtk_widget_show_all(dialog);
-    return dialog;
-}
 
 static GtranscoderApp *get_app(GtkWidget *window)
 {
@@ -192,6 +173,7 @@ static void init_contents(GtkWidget *window, GtranscoderApp *app)
                                           NULL),
                       1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
+    // FIXME
     gnome_app_set_contents(GNOME_APP(window), GTK_WIDGET(table));
 }
 
