@@ -46,6 +46,7 @@ AC_PROG_INTLTOOL
 
 # export compiler/linker options
 AC_SUBST(CFLAGS)
+AC_SUBST(CFLAGS, " -O2 -Wall -Wno-unused -Werror -Wextra --std=gnu99 -Wfatal-errors") 
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
@@ -59,6 +60,7 @@ GNOME_MODULES="libgnomeui-2.0 >= 2.0.0"
 PKG_CHECK_MODULES(GNOME, $GNOME_MODULES)
 AC_SUBST(GNOME_CFLAGS)
 AC_SUBST(GNOME_LIBS)
+
 
 AC_CONFIG_FILES([
     Makefile
