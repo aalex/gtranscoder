@@ -41,3 +41,11 @@ GtkWidget *gtranscoder_show_error_dialog(const gchar *message, GtkWidget *parent
     gtk_widget_show_all(dialog);
     return dialog;
 }
+
+void gtranscoder_show_error_dialog_without_main_loop(gchar *message)
+{
+    GtkWidget *dialog = gtranscoder_show_error_dialog(message, NULL);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    g_debug("Done showing the error dialog.");
+}
+

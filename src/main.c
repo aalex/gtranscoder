@@ -20,6 +20,7 @@
 #include "config.h"
 #include "application.h"
 #include "transcoding.h"
+#include "gtranscoder-error.h"
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -68,7 +69,10 @@ int main(int argc, char *argv[])
     gboolean has_ffmpeg = check_for_ffmpeg();
     if (! has_ffmpeg)
     {
-        g_error("%s", N_("Could not find the ffmpeg executable."));
+        gchar *error_mess = N_("Gtranscoder could not find the ffmpeg executable. Aborting.");
+        g_critical("%s", error_mess);
+        gtranscoder_show_error_dialog_without_main_loop(error_mess);
+        g_error("%s", N_("ffmpeg is required."));
         return 1;
     }
     else

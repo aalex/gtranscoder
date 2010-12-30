@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 
 GtkWidget *gtranscoder_show_error_dialog(const gchar *message, GtkWidget *parent);
+void gtranscoder_show_error_dialog_without_main_loop(gchar *message);
 
 #endif
 
