@@ -111,6 +111,7 @@ void run_main_window()
     gtk_widget_show_all(GTK_WIDGET(menubar));
 
     /* the toolbar buttons */
+    gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
     GtkToolItem *apply_tool = gtk_tool_button_new_from_stock(GTK_STOCK_APPLY);
     /* FIXME: 2010-12-29:aalex: set_label doesn't make the label visible. */
     gtk_tool_button_set_label(GTK_TOOL_BUTTON(apply_tool), N_("Apply"));
