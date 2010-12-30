@@ -25,6 +25,7 @@
 typedef struct application_
 {
     GtkWidget *file_chooser;
+    GtkWidget *statusbar;
 } GtranscoderApp;
 
 void run_main_window();

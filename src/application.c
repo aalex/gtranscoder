@@ -17,18 +17,42 @@
  * along with Gtranscoder.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// FIXME
 #include <gnome.h>
+#include <gtk/gtk.h>
+// FIXME
 #include <libgnomeui/libgnomeui.h>
 #include "application.h"
 #include "config.h"
 
 static const gchar *APP_DATA_KEY = "app-data";
 
+/**
+ * Shows an error dialog. The main loop must be running.
+ */
+GtkWidget *gtranscoder_show_error_dialog(const gchar *message, GtkWidget *parent)
+{
+    /* TODO: maybe pass a GCallback as well */
+    GtkWidget *dialog = gtk_message_dialog_new_with_markup(
+        GTK_WINDOW(parent),
+        GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+        GTK_MESSAGE_ERROR,
+        GTK_BUTTONS_CLOSE,
+        message,
+        NULL);
+    /* Ensure that the dialog box is destroyed when the user responds. */
+    g_signal_connect_swapped (dialog,
+        "response",
+        G_CALLBACK (gtk_widget_destroy),
+        dialog);
+    gtk_widget_show_all(dialog);
+    return dialog;
+}
+
 static GtranscoderApp *get_app(GtkWidget *window)
 {
     return (GtranscoderApp *) g_object_get_data(G_OBJECT(window), APP_DATA_KEY);
 }
-
 
 static gboolean on_delete_event(GtkWidget *widget, GdkEvent event, gpointer data)
 {
@@ -42,11 +66,6 @@ static void on_window_destroyed(GtkWidget *widget, gpointer data)
 }
 
 static void on_about_menu_item_chosen(GtkWidget *item, gpointer data)
-{
-    g_debug("`%s' called", __FUNCTION__);
-}
-
-static void on_apply_clicked(GtkWidget *item, gpointer data)
 {
     g_debug("`%s' called", __FUNCTION__);
 }
@@ -67,6 +86,18 @@ static void on_quit_chosen(GtkWidget *item, gpointer data)
     gtk_main_quit();
 }
 
+static void on_apply_clicked(GtkToolButton *toolbutton, gpointer data)
+{
+    g_debug("`%s' called", __FUNCTION__);
+    GtranscoderApp *app = (GtranscoderApp *) data;
+    //app->file_chooser;
+    GtkWidget *dialog = gtranscoder_show_error_dialog("The transcoding is not yet implemented.", NULL);
+    g_signal_connect_swapped (dialog,
+        "response",
+        G_CALLBACK (on_quit_chosen), // FIXME
+        NULL);
+}
+
 /* handler for GnomeFileEntry::activate */
 static void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
 {
@@ -77,7 +108,7 @@ static void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
     g_free(path);
 }
 
-static void init_menubar(GtkWidget *window)
+static void init_menubar(GtkWidget *window, GtranscoderApp *app)
 {
     /* setup shortcuts */
     GtkAccelGroup *accel_group = gtk_accel_group_new();
@@ -108,32 +139,36 @@ static void init_menubar(GtkWidget *window)
     /* oddly, it seems we need to explicitely show the menu bar so that it's visible. */
     gtk_widget_show_all(GTK_WIDGET(menubar));
 
+    // FIXME
     gnome_app_set_menus(GNOME_APP(window), GTK_MENU_BAR(menubar));
 }
 
-static void init_toolbar(GtkWidget *window)
+
+static void init_toolbar(GtkWidget *window, GtranscoderApp *app)
 {
     GtkWidget *toolbar = gtk_toolbar_new();
 
     /* the toolbar buttons */
     gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
     GtkToolItem *apply_tool = gtk_tool_button_new_from_stock(GTK_STOCK_APPLY);
-    /* FIXME: 2010-12-29:aalex: set_label doesn't make the label visible. */
     gtk_tool_button_set_label(GTK_TOOL_BUTTON(apply_tool), N_("Apply"));
     gtk_widget_set_tooltip_text(GTK_WIDGET(apply_tool), N_("Proceed with the movie transcoding"));
-    gtk_toolbar_insert(toolbar, apply_tool, -1);
+    g_signal_connect(GTK_TOOL_BUTTON(apply_tool), "clicked", G_CALLBACK(on_apply_clicked), app);
+    gtk_toolbar_insert(GTK_TOOLBAR(toolbar), apply_tool, -1);
     gtk_widget_show_all(GTK_WIDGET(toolbar));
 
+    // FIXME
     gnome_app_set_toolbar(GNOME_APP(window), GTK_TOOLBAR(toolbar));
 }
 
-static void init_contents(GtkWidget *window)
+static void init_contents(GtkWidget *window, GtranscoderApp *app)
 {
     /* file chooser */
     GtkWidget *file_chooser = g_object_new(GNOME_TYPE_FILE_ENTRY, 
         "history-id", "fileentry",
          NULL);
     g_signal_connect(file_chooser, "activate", G_CALLBACK(fileentry_activated), NULL);
+    app->file_chooser = file_chooser;
 
     /* create a two-column table for all of the widgets */
     GtkTable *table = g_object_new(GTK_TYPE_TABLE,
@@ -160,15 +195,18 @@ static void init_contents(GtkWidget *window)
     gnome_app_set_contents(GNOME_APP(window), GTK_WIDGET(table));
 }
 
-static void init_statusbar(GtkWidget *window)
+static void init_statusbar(GtkWidget *window, GtranscoderApp *app)
 {
     GtkWidget *statusbar = gtk_statusbar_new();
+    // FIXME
     gnome_app_set_statusbar(GNOME_APP(window), statusbar);
+    app->statusbar = statusbar;
 }
 
 void run_main_window()
 {
     GtkWidget *window = gnome_app_new(PACKAGE_NAME, "Gtranscoder");
+    // FIXME: GnomeApp is deprecated. It should be a window with 4 sections.
     GtranscoderApp *app = g_new0(GtranscoderApp, 1);
     g_object_set_data(G_OBJECT(window), APP_DATA_KEY, app);
     gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
@@ -176,10 +214,10 @@ void run_main_window()
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroyed), NULL);
 
     /* create menu/tool/status bars */
-    init_menubar(window);
-    init_toolbar(window);
-    init_contents(window);
-    init_statusbar(window);
+    init_menubar(window, app);
+    init_toolbar(window, app);
+    init_contents(window, app);
+    init_statusbar(window, app);
   
     /* show it all */
     gtk_widget_show_all(GTK_WIDGET(window));
