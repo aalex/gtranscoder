@@ -20,7 +20,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
-#include <gnome.h>
+#include <gtk/gtk.h>
 
 typedef struct application_
 {
