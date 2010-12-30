@@ -26,8 +26,10 @@ Alexandre Quessy <alexandre@quessy.net>
 Dependencies
 ============
 
+ * The GNU autotools
  * ffmpeg
- * libgnomeui-dev
+ * libgtk2.0-dev
+ * libgconf2-dev
 
 
 License

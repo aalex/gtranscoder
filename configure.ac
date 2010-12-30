@@ -46,7 +46,7 @@ AC_PROG_INTLTOOL
 
 # export compiler/linker options
 AC_SUBST(CFLAGS)
-AC_SUBST(CFLAGS, " -O2 -Wall -Wno-unused -Werror -Wextra --std=gnu99 -Wfatal-errors") 
+AC_SUBST(CFLAGS, " -O2 -Wall -Wno-unused -Werror --std=gnu99 -Wfatal-errors -Wextra ") #  
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 

@@ -22,6 +22,11 @@
 
 #include <gtk/gtk.h>
 
+typedef struct options_
+{
+    gboolean verbose;
+} GtranscoderOptions;
+
 typedef struct application_
 {
     GtkWidget *file_chooser;

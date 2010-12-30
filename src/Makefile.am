@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-INCLUDES = -DGNOMELOCALEDIR=\""$(datadir)/locale/"\" \
+INCLUDES = -DPACKAGE_LOCALEDIR=\""$(datadir)/locale/"\" \
             -DG_LOG_DOMAIN=\"Gtranscoder\" \
 			-DDATADIR=\"$(datadir)\" \
 			-DLIBDIR=\"$(libdir)\" \

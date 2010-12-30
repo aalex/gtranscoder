@@ -188,7 +188,7 @@ static void init_statusbar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *a
     app->statusbar = statusbar;
 }
 
-void run_main_window()
+void run_main_window(GtranscoderOptions *options)
 {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Gtranscoder"); // TODO: " - " APP_ONE_LINER);
@@ -210,6 +210,5 @@ void run_main_window()
   
     /* show it all */
     gtk_widget_show_all(GTK_WIDGET(window));
-    gtk_main();
 }
 
