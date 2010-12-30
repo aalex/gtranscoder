@@ -111,9 +111,10 @@ void run_main_window()
     gtk_widget_show_all(GTK_WIDGET(menubar));
 
     /* the toolbar buttons */
-    gtk_toolbar_insert_stock(toolbar, GTK_STOCK_APPLY,
-                           N_("Proceed with the movie transcoding"),
-                           NULL, G_CALLBACK(on_apply_clicked), N_("Apply"), -1);
+    GtkToolItem *apply_tool = gtk_tool_button_new_from_stock(GTK_STOCK_APPLY);
+    //gtk_tool_button_set_label(GTK_TOOL_BUTTON(apply_tool), N_("Apply"));
+    //gtk_widget_set_tooltip_text(GTK_WIDGET(apply_tool), N_("Proceed with the movie transcoding"));
+    gtk_toolbar_insert(toolbar, apply_tool, -1);
 
     /* file chooser */
     GtkWidget *file_chooser = g_object_new(GNOME_TYPE_FILE_ENTRY, "history-id", "fileentry",
