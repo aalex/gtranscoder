@@ -116,7 +116,7 @@ static void init_menubar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app
     /* oddly, it seems we need to explicitely show the menu bar so that it's visible. */
     gtk_widget_show_all(GTK_WIDGET(menubar));
 
-    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(menubar), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(menubar), FALSE /* expand */, TRUE /* fill */, 0);
 }
 
 static void init_toolbar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app)
@@ -132,7 +132,7 @@ static void init_toolbar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app
     gtk_toolbar_insert(GTK_TOOLBAR(toolbar), apply_tool, -1);
     gtk_widget_show_all(GTK_WIDGET(toolbar));
 
-    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(toolbar), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(toolbar), FALSE /* expand */, TRUE /* fill */, 0);
 }
 
 static void init_contents(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app)
@@ -164,13 +164,13 @@ static void init_contents(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *ap
                                           NULL),
                       1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(table), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(table), TRUE /* expand */, TRUE /* fill */, 0);
 }
 
 static void init_statusbar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *app)
 {
     GtkWidget *statusbar = gtk_statusbar_new();
-    gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE /* expand */, TRUE /* fill */, 0);
     gtk_widget_show_all(GTK_WIDGET(statusbar));
     gtk_statusbar_push(GTK_STATUSBAR(statusbar), gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "Only for when creating the status bar"), N_("Ready"));
     app->statusbar = statusbar;
