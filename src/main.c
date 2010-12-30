@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
     GtranscoderOptions *options = g_new0(GtranscoderOptions, 1);;
     GOptionEntry entries[] =
     {
-        { "verbose", 'v', 0, G_OPTION_ARG_NONE, &options->verbose, "Print debug info", NULL },
-        { "version", 'V', 0, G_OPTION_ARG_NONE, &options->show_version, "Show version number and exit", NULL },
+        { "verbose", 'v', 0, G_OPTION_ARG_NONE, &options->verbose, N_("Print debug info"), NULL },
+        { "version", 'V', 0, G_OPTION_ARG_NONE, &options->show_version, N_("Show version number and exit"), NULL },
         { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, 0 }
     };
 
