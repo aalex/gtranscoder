@@ -16,7 +16,8 @@
  * You should have received a copy of the gnu general public license
  * along with Gtranscoder.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include "application.h"
 #include "gtranscoder-error.h"
