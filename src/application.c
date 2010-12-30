@@ -72,7 +72,7 @@ void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
 void run_main_window()
 {
     GtkWidget *window = gnome_app_new(PACKAGE_NAME, "Gtranscoder");
-    gtk_window_set_default_size(GTK_WINDOW(window), 640, 640);
+    gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
 
     g_signal_connect(window, "delete_event", G_CALLBACK(on_delete_event), NULL);
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroyed), NULL);
@@ -112,15 +112,17 @@ void run_main_window()
 
     /* the toolbar buttons */
     GtkToolItem *apply_tool = gtk_tool_button_new_from_stock(GTK_STOCK_APPLY);
-    //gtk_tool_button_set_label(GTK_TOOL_BUTTON(apply_tool), N_("Apply"));
-    //gtk_widget_set_tooltip_text(GTK_WIDGET(apply_tool), N_("Proceed with the movie transcoding"));
+    /* FIXME: 2010-12-29:aalex: set_label doesn't make the label visible. */
+    gtk_tool_button_set_label(GTK_TOOL_BUTTON(apply_tool), N_("Apply"));
+    gtk_widget_set_tooltip_text(GTK_WIDGET(apply_tool), N_("Proceed with the movie transcoding"));
     gtk_toolbar_insert(toolbar, apply_tool, -1);
+    gtk_widget_show_all(GTK_WIDGET(toolbar));
 
     /* file chooser */
-    GtkWidget *file_chooser = g_object_new(GNOME_TYPE_FILE_ENTRY, "history-id", "fileentry",
-                            NULL);
-    g_signal_connect(file_chooser, "activate", G_CALLBACK(fileentry_activated),
-                   NULL);
+    GtkWidget *file_chooser = g_object_new(GNOME_TYPE_FILE_ENTRY, 
+        "history-id", "fileentry",
+         NULL);
+    g_signal_connect(file_chooser, "activate", G_CALLBACK(fileentry_activated), NULL);
 
     /* create a two-column table for all of the widgets */
     GtkTable *table = g_object_new(GTK_TYPE_TABLE,
