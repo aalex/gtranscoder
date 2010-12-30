@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src pixmaps po
-EXTRA_DIST = config.rpath  RELEASE NEWS gtranscoder.desktop.in \
+EXTRA_DIST = config.rpath NEWS gtranscoder.desktop.in \
   intltool-extract.in \
   intltool-merge.in \
   intltool-update.in
