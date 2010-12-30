@@ -60,7 +60,7 @@ static void on_quit_chosen(GtkWidget *item, gpointer data)
 }
 
 /* handler for GnomeFileEntry::activate */
-void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
+static void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
 {
     g_debug("`%s' called", __FUNCTION__);
     gchar *path;
@@ -69,22 +69,12 @@ void fileentry_activated(GnomeFileEntry *file_widget, gpointer data)
     g_free(path);
 }
 
-void run_main_window()
+static void init_menubar(GtkWidget *window)
 {
-    GtkWidget *window = gnome_app_new(PACKAGE_NAME, "Gtranscoder");
-    gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
-
-    g_signal_connect(window, "delete_event", G_CALLBACK(on_delete_event), NULL);
-    g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroyed), NULL);
-
     /* setup shortcuts */
     GtkAccelGroup *accel_group = gtk_accel_group_new();
     gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
-  
-    /* create menu/tool/status bars */
     GtkWidget *menubar = gtk_menu_bar_new();
-    GtkWidget *toolbar = gtk_toolbar_new();
-    GtkWidget *statusbar = gtk_statusbar_new();
 
     /* Populate the file menu */
     GtkWidget *file_menu_widget = gtk_menu_item_new_with_mnemonic("_File");
@@ -106,9 +96,16 @@ void run_main_window()
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), help_menu_widget);
     g_signal_connect(help_help, "activate", G_CALLBACK(on_help_index_chosen), NULL);
     g_signal_connect(help_about, "activate", G_CALLBACK(on_help_about_chosen), NULL);
-    
+
     /* oddly, it seems we need to explicitely show the menu bar so that it's visible. */
     gtk_widget_show_all(GTK_WIDGET(menubar));
+
+    gnome_app_set_menus(GNOME_APP(window), GTK_MENU_BAR(menubar));
+}
+
+static void init_toolbar(GtkWidget *window)
+{
+    GtkWidget *toolbar = gtk_toolbar_new();
 
     /* the toolbar buttons */
     gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
@@ -119,6 +116,11 @@ void run_main_window()
     gtk_toolbar_insert(toolbar, apply_tool, -1);
     gtk_widget_show_all(GTK_WIDGET(toolbar));
 
+    gnome_app_set_toolbar(GNOME_APP(window), GTK_TOOLBAR(toolbar));
+}
+
+static void init_contents(GtkWidget *window)
+{
     /* file chooser */
     GtkWidget *file_chooser = g_object_new(GNOME_TYPE_FILE_ENTRY, 
         "history-id", "fileentry",
@@ -148,9 +150,26 @@ void run_main_window()
                       1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
     gnome_app_set_contents(GNOME_APP(window), GTK_WIDGET(table));
-    gnome_app_set_menus(GNOME_APP(window), GTK_MENU_BAR(menubar));
-    gnome_app_set_toolbar(GNOME_APP(window), GTK_TOOLBAR(toolbar));
+}
+
+static void init_statusbar(GtkWidget *window)
+{
+    GtkWidget *statusbar = gtk_statusbar_new();
     gnome_app_set_statusbar(GNOME_APP(window), statusbar);
+}
+
+void run_main_window()
+{
+    GtkWidget *window = gnome_app_new(PACKAGE_NAME, "Gtranscoder");
+    gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
+    g_signal_connect(window, "delete_event", G_CALLBACK(on_delete_event), NULL);
+    g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroyed), NULL);
+
+    /* create menu/tool/status bars */
+    init_menubar(window);
+    init_toolbar(window);
+    init_contents(window);
+    init_statusbar(window);
   
     /* show it all */
     gtk_widget_show_all(GTK_WIDGET(window));
