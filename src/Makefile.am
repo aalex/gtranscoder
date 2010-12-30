@@ -6,9 +6,9 @@ INCLUDES = -DPACKAGE_LOCALEDIR=\""$(datadir)/locale/"\" \
 			-DSYSCONFDIR=\"$(sysconfdir)\" \
 			-DPREFIX=\"$(prefix)\" \
             -I$(top_srcdir) \
-            $(GNOME_CFLAGS)
+            $(GTK_CFLAGS)
 
-LIBS = $(GNOME_LIBS)
+LIBS = $(GTK_LIBS)
 
 bin_PROGRAMS = gtranscoder
 gtranscoder_SOURCES = \
