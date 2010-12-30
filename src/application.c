@@ -58,13 +58,29 @@ static void on_quit_chosen(GtkWidget *item, gpointer data)
     gtk_main_quit();
 }
 
-static void on_error_dialog_response(GtkWidget *item, gpointer data)
+static void on_error_dialog_response(GtkWidget *widget, gpointer data)
 {
     g_debug("`%s' called", __FUNCTION__);
     gtk_main_quit();
 }
 
-static void on_apply_clicked(GtkToolButton *toolbutton, gpointer data)
+static void on_containers_changed(GtkWidget *widget, gpointer data)
+{
+    g_debug("`%s' called", __FUNCTION__);
+    gint key = gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
+    gchar *value = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
+    g_debug("Chosen container is %d (%s)", key, value);
+    g_free(value);
+    // will use that somewhere else:
+    // gint num_items = gtk_tree_model_iter_n_children(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)), NULL);
+    // if (num_items > 0)
+    // {
+    //     gtk_combo_box_remove_text(GTK_COMBO_BOX(widget), 0);
+    //     g_debug("Removed item 0. %d are left.", num_items);
+    // }
+}
+
+static void on_apply_clicked(GtkToolButton *widget, gpointer data)
 {
     g_debug("`%s' called", __FUNCTION__);
     GtranscoderApp *app = (GtranscoderApp *) data;
@@ -135,13 +151,25 @@ static void init_contents(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *ap
     app->file_chooser = file_chooser;
 
     // Create the widgets to pack
-    const gint num_rows = 1; // It's very important that this number matches in the next three lines:
-    gchar *labels[1];
-    GtkWidget *widgets[1];
+    const gint num_rows = 2; // It's very important that this number matches in the next three lines:
+    gchar *labels[2];
+    GtkWidget *widgets[2];
+    // row 0:
     labels[0] = N_("Input movie file:");
     widgets[0] = GTK_WIDGET(g_object_new(GTK_TYPE_ALIGNMENT,
                                           "xalign", 0.0,
                                           "child", file_chooser,
+                                          NULL));
+    labels[1] = N_("Container format:");
+    GtkWidget *containers_combo_box = gtk_combo_box_new_text();
+    gtk_combo_box_append_text(GTK_COMBO_BOX(containers_combo_box), "OGG");
+    gtk_combo_box_append_text(GTK_COMBO_BOX(containers_combo_box), "Quicktime");
+    gtk_combo_box_append_text(GTK_COMBO_BOX(containers_combo_box), "AVI");
+    g_signal_connect(GTK_COMBO_BOX(containers_combo_box), "changed", G_CALLBACK(on_containers_changed), NULL);
+
+    widgets[1] = GTK_WIDGET(g_object_new(GTK_TYPE_ALIGNMENT,
+                                          "xalign", 0.0,
+                                          "child", containers_combo_box,
                                           NULL));
 
     /* create a two-column table for all of the widgets */
@@ -151,7 +179,6 @@ static void init_contents(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *ap
                        "column-spacing", 6,
                        "row-spacing", 6,
                        NULL);
-
 
     int i;
     for (i = 0; i < num_rows; i++)
