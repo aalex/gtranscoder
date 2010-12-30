@@ -20,6 +20,13 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include <gnome.h>
+
+typedef struct application_
+{
+    GtkWidget *file_chooser;
+} GtranscoderApp;
+
 void run_main_window();
 
 #endif

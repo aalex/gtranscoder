@@ -17,10 +17,18 @@
  * along with Gtranscoder.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "application.h"
-#include "config.h"
 #include <gnome.h>
 #include <libgnomeui/libgnomeui.h>
+#include "application.h"
+#include "config.h"
+
+static const gchar *APP_DATA_KEY = "app-data";
+
+static GtranscoderApp *get_app(GtkWidget *window)
+{
+    return (GtranscoderApp *) g_object_get_data(G_OBJECT(window), APP_DATA_KEY);
+}
+
 
 static gboolean on_delete_event(GtkWidget *widget, GdkEvent event, gpointer data)
 {
@@ -161,6 +169,8 @@ static void init_statusbar(GtkWidget *window)
 void run_main_window()
 {
     GtkWidget *window = gnome_app_new(PACKAGE_NAME, "Gtranscoder");
+    GtranscoderApp *app = g_new0(GtranscoderApp, 1);
+    g_object_set_data(G_OBJECT(window), APP_DATA_KEY, app);
     gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
     g_signal_connect(window, "delete_event", G_CALLBACK(on_delete_event), NULL);
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroyed), NULL);
