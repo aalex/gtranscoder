@@ -19,20 +19,12 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <gconf/gconf.h> // GConf2 will be eventually replaced by GSettings
 #include "application.h"
 #include "gtranscoder-error.h"
 #include "config.h"
-// GConf2 will be eventually replaced by GSettings
-//TODO: use gconf #include <gconf/gconf.h>
 
-// TODO: deprecate this (we don't need gobject set data)
-static const gchar *APP_DATA_KEY = "app-data";
 static const gchar *APP_ONE_LINER = N_("Movie format converter");
-
-static GtranscoderApp *get_app(GtkWidget *window)
-{
-    return (GtranscoderApp *) g_object_get_data(G_OBJECT(window), APP_DATA_KEY);
-}
 
 static gboolean on_delete_event(GtkWidget *widget, GdkEvent event, gpointer data)
 {
@@ -142,28 +134,42 @@ static void init_contents(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *ap
     //g_signal_connect(file_chooser, "activate", G_CALLBACK(fileentry_activated), NULL);
     app->file_chooser = file_chooser;
 
+    // Create the widgets to pack
+    const gint num_rows = 1; // It's very important that this number matches in the next three lines:
+    gchar *labels[1];
+    GtkWidget *widgets[1];
+    labels[0] = N_("Input movie file:");
+    widgets[0] = GTK_WIDGET(g_object_new(GTK_TYPE_ALIGNMENT,
+                                          "xalign", 0.0,
+                                          "child", file_chooser,
+                                          NULL));
+
     /* create a two-column table for all of the widgets */
     GtkTable *table = g_object_new(GTK_TYPE_TABLE,
-                       "n-rows", 9,
+                       "n-rows", num_rows,
                        "n-columns", 2,
                        "column-spacing", 6,
                        "row-spacing", 6,
                        NULL);
-    gtk_table_attach(table, g_object_new(GTK_TYPE_LABEL,
-                                          "label", N_("Input movie file:"),
+
+
+    int i;
+    for (i = 0; i < num_rows; i++)
+    {
+        gtk_table_attach(table, g_object_new(GTK_TYPE_LABEL,
+                                          "label", labels[i],
                                           "use-underline", TRUE,
-                                          "mnemonic-widget", file_chooser,
+                                          "mnemonic-widget", widgets[i],
                                           "xalign", 1.0,
                                           "justify", GTK_JUSTIFY_RIGHT,
                                           NULL),
-                      0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+                      /* col: */ 0, 1, /* row: */ i, i + 1, 
+                      GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-    gtk_table_attach(table, g_object_new(GTK_TYPE_ALIGNMENT,
-                                          "xalign", 0.0,
-                                          "child", file_chooser,
-                                          NULL),
-                      1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
-
+        gtk_table_attach(table, widgets[i],
+                      /* col: */ 1, 2, /* row: */ i, i + 1, 
+                      GTK_EXPAND | GTK_FILL, 0, 0, 0);
+    }
     gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(table), TRUE /* expand */, TRUE /* fill */, 0);
 }
 
@@ -179,11 +185,9 @@ static void init_statusbar(GtkWidget *window, GtkWidget *vbox, GtranscoderApp *a
 void run_main_window(GtranscoderOptions *options)
 {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Gtranscoder"); // TODO: " - " APP_ONE_LINER);
-    //gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
+    gtk_window_set_title(GTK_WINDOW(window), "Gtranscoder");
+    gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
     GtranscoderApp *app = g_new0(GtranscoderApp, 1);
-    // FIXME: don't need that:
-    g_object_set_data(G_OBJECT(window), APP_DATA_KEY, app);
     g_signal_connect(window, "delete_event", G_CALLBACK(on_delete_event), NULL);
     g_signal_connect(window, "destroy", G_CALLBACK(on_window_destroyed), NULL);
 
